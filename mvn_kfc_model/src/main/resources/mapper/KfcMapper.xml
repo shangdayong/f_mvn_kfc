@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.colin.ssm.mapper.KfcMapper">
+    <select id="queryMeal" resultType="com.colin.ssm.pojo.Meal" parameterType="com.colin.ssm.pojo.Meal">
+        SELECT m.*,count(f.fid) sl,GROUP_CONCAT(f.fname) fnames,GROUP_CONCAT(f.price) prices from meal m,middle d,food f
+        where m.mid=d.mid and f.fid=d.fid GROUP BY m.mid ORDER BY m.mid
+    </select>
+    <delete id="delMeal">
+        delete FROM meal where mid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="delMiddle">
+        delete FROM middle where mid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selFood" resultType="com.colin.ssm.pojo.Food" parameterType="integer">
+        select f.* ,m.mid from food  f LEFT JOIN middle m on f.fid=m.fid and m.mid=#{value} ORDER BY f.fid
+    </select>
+    <insert id="addMeal" parameterType="com.colin.ssm.pojo.Meal">
+        <selectKey order="AFTER" resultType="int" keyColumn="mid" keyProperty="mid">
+            select LAST_INSERT_ID()
+        </selectKey>
+        INSERT into meal(mname,price,CDate) values(#{mname},#{price},#{CDate})
+    </insert>
+    <insert id="addMiddle" parameterType="com.colin.ssm.pojo.Middle">
+        INSERT into middle(mid,fid) values(#{mid},#{fid})
+    </insert>
+    <select id="queryOne" resultType="com.colin.ssm.pojo.Meal" parameterType="integer">
+        SELECT * from meal where mid=#{value}
+    </select>
+    <update id="upMeal" parameterType="com.colin.ssm.pojo.Meal">
+        UPDATE meal set mname=#{mname},price=#{price},CDate=#{CDate} where mid=#{mid}
+    </update>
+</mapper>
+

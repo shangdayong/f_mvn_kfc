@@ -1,0 +1,4 @@
+com\colin\ssm\service\KfcService.class
+META-INF\spring.components
+com\colin\ssm\mapper\KfcMapper.class
+com\colin\ssm\service\KfcServiceImpl.class
